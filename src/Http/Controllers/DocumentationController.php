@@ -45,7 +45,8 @@ class DocumentationController extends Controller
             'larecipe.show',
             [
                 'version' => config('larecipe.versions.default'),
-                'page' => config('larecipe.docs.landing')
+                'page' => config('larecipe.docs.landing'),
+                'group' => config('larecipe.docs.groups[0]')
             ]
         );
     }
@@ -58,9 +59,9 @@ class DocumentationController extends Controller
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function show($version, $page = null)
+    public function show($version,$groups=null, $page = null)
     {
-        $documentation = $this->documentationRepository->get($version, $page);
+        $documentation = $this->documentationRepository->get($version, $groups."/".$page);
         
         if (Gate::has('viewLarecipe')) {
             $this->authorize('viewLarecipe', $documentation);
@@ -75,9 +76,9 @@ class DocumentationController extends Controller
                 ]
             );
         }
-
         return response()->view('larecipe::docs', [
             'title'          => $documentation->title,
+            'group'          => $groups,
             'index'          => $documentation->index,
             'content'        => $documentation->content,
             'currentVersion' => $version,

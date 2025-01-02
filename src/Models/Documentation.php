@@ -44,19 +44,29 @@ class Documentation
      * @param  string  $version
      * @return string
      */
-    public function getIndex($version)
+    public function getIndex($version, $group="")
     {
-        return $this->cache->remember(function() use($version) {
-            $path = base_path(config('larecipe.docs.path').'/'.$version.'/index.md');
+        
+        return $this->cache->remember(function() use($version,$group) {
 
+            if($group!=""){
+                $path = base_path(config('larecipe.docs.path').'/'.$version.'/'.$group.'/index.md');
+            }else{
+                $path = base_path(config('larecipe.docs.path').'/'.$version.'/index.md');
+            }
+           
             if ($this->files->exists($path)) {
                 $parsedContent = $this->parse($this->files->get($path));
+
+                if($group){
+                    $version= $version."/".$group;
+                }
 
                 return $this->replaceLinks($version, $parsedContent);
             }
 
             return null;
-        }, 'larecipe.docs.'.$version.'.index');
+        }, 'larecipe.docs.'.$version.$group.'.index');
     }
 
     /**

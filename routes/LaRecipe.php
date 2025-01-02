@@ -11,4 +11,10 @@ Route::get('/scripts/{script}', 'ScriptController')->name('scripts');
 
 // Documentation..
 Route::get('/', 'DocumentationController@index')->name('index');
-Route::get('/{version}/{page?}', 'DocumentationController@show')->where('page', '(.*)')->name('show');
+if(config('larecipe.docs.groups')){
+    Route::get('/{version}/{group?}/{page?}', 'DocumentationController@show')->where('page', '(.*)')->name('show');
+}else{
+    Route::get('/{version}/{page?}', 'DocumentationController@show')->where('page', '(.*)')->name('show');
+}
+
+

@@ -31,6 +31,7 @@ class DocumentationRepository
         $this->defaultVersion = config('larecipe.versions.default');
         $this->publishedVersions = config('larecipe.versions.published');
         $this->defaultVersionUrl = route('larecipe.show', ['version' => $this->defaultVersion]);
+      //  $this->groups = config('larecipe.docs.groups');
     }
 
     /**
@@ -41,10 +42,20 @@ class DocumentationRepository
      */
     public function get($version, $page = null, $data = [])
     {
+
+        if($page && config('larecipe.docs.groups')){
+            $pageArray = explode('/', $page);
+            if(count($pageArray) > 1){
+                $this->group = $pageArray[0];
+            }else{
+                $this->group = config('larecipe.docs.default_group');
+            }
+        }        
+        
+
         $this->version = $version;
         $this->sectionPage = $page ?: config('larecipe.docs.landing');
-        $this->index = $this->documentation->getIndex($version);
-
+        $this->index = $this->documentation->getIndex($version,$this->group);
         $this->content = $this->documentation->get($version, $this->sectionPage, $data);
 
         if (is_null($this->content)) {

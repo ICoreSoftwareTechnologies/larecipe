@@ -17,6 +17,8 @@ trait HasDocumentationAttributes
     protected $publishedVersions;
     protected $defaultVersionUrl;
 
+    protected $group;
+
     /**
      * @return string
      */
@@ -88,4 +90,13 @@ trait HasDocumentationAttributes
     {
         return $this->publishedVersions;
     }
+
+    /**
+     * @return string
+     */
+    public function getGroupAttribute()
+    {
+        return $this->group;
+    }
+
 }
